@@ -59,4 +59,28 @@ def user_signup(request):
 
 
 def user_signin(request):
-    return render(request, 'login.html')
+    form = {}
+    form['message'] = ''
+    form['input_error'] = {}
+    form['input_error']['error'] = False
+
+    if request.method == "POST":
+        form['login_id'] = request.POST.get('loginId', '')
+        form['password'] = request.POST.get('password', '')
+
+        if (DataValidator.is_null(form['login_id'])):
+            form['input_error']['login_id'] = 'Login ID is required'
+            form['input_error']['error'] = True
+
+        if (DataValidator.is_null(form['password'])):
+            form['input_error']['password']='password is required'
+            form['input_error']['error']=True
+
+        if not form['input_error']['error']:
+            form['message'] = 'User Login Sucessfully..!!'
+
+
+        print('form =', form)
+
+
+    return render(request, 'login.html',{'form': form})
