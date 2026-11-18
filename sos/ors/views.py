@@ -1,6 +1,7 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
+from .service.user_service import UserService
 from .utility.data_validator import DataValidator
 
 
@@ -15,6 +16,7 @@ def welcome(request):
 def user_signup(request):
     form = {}
     form['message'] = ''
+    form['error'] = False
     form['input_error'] = {}
     form['input_error']['error'] = False
 
@@ -51,9 +53,15 @@ def user_signup(request):
             form['input_error']['error'] = True
 
         if not form['input_error']['error']:
-            form['message'] = 'User Registration Sucessfully..!!'
+            try:
+                UserService().add(form)
+                form['error']=False
+                form['message'] = 'User Registration Sucessfully..!!'
+            except Exception as e:
+                form['error']=True
+                form['message']=str(e)
 
-        print('form =', form)
+        # print('form =', form)
 
     return render(request, 'registration.html', {'form': form})
 
@@ -77,10 +85,17 @@ def user_signin(request):
             form['input_error']['error']=True
 
         if not form['input_error']['error']:
-            form['message'] = 'User Login Sucessfully..!!'
+            user_list = UserService().authenticate(form['login_id'],form['password'])
+
+            if user_list:
+                return redirect('/ors/welcome/')
+            else:
+                form['error']=True
+                form['message']='Login ID & Password Invalid'
+                # form['message'] = 'User Login Sucessfully..!!'
 
 
-        print('form =', form)
+        # print('form =', form)
 
 
     return render(request, 'login.html',{'form': form})
