@@ -12,9 +12,9 @@
         <h1>User Registration</h1>
         <div style="height: 30px;">
             {% if form.error %}
-            <h3><font color="red">{{ form.message  }}</font></h3>
+            <h3><font color="red">{{ form.message }}</font></h3>
             {% else %}
-            <h3><font color="green">{{ form.message  }}</font></h3>
+            <h3><font color="green">{{ form.message }}</font></h3>
             {% endif %}
 
         </div>
@@ -52,6 +52,12 @@
             <tr>
                 <th></th>
                 <td><input type="submit" value="signUp"></td>
+<!--                <td><input type="submit" value="LogIn"></td>-->
+                <td><a href="/ors/signin/">
+                    <button type="button">Login</button>
+                    </a>
+                </td>
+
             </tr>
         </table>
     </div>

@@ -13,3 +13,6 @@ class DataValidator:
             return False
         else:
             return True
+
+    # @classmethod
+    # def is_email(self,val):
