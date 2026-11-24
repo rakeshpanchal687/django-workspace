@@ -115,3 +115,46 @@ def user_logout(request):
     request.session['first_name'] = None
     request.session.flush()
     return redirect('/ors/signin/')
+
+
+def test_list(request):
+    list = [
+        {"id": 1, "first_name": "Rakesh", "last_name": "panchal", "email": "rakesh@gmail.com", "password": "12345"},
+        {"id": 2, "first_name": "harsh", "last_name": "parmar", "email": "harsh@gmail.com", "password": "12345"},
+        {"id": 3, "first_name": "raj", "last_name": "thakur", "email": "raj@gmail.com", "password": "12345"},
+        {"id": 4, "first_name": "rahul", "last_name": "sharma", "email": "rahul@gmail.com", "password": "12345"},
+        {"id": 5, "first_name": "amit", "last_name": "verma", "email": "amit@gmail.com", "password": "12345"}
+    ]
+
+    return render(request, "test_list.html", {"list": list})
+
+
+def user_list(request):
+    form = {}
+    form['page_no'] = 1
+    form['page_size'] = 5
+    form['list'] = []
+
+    if request.method == "GET":
+        form['list'] = UserService().search(form)
+        form['disable_previous'] = form['page_no'] == 1
+        form['disable_next'] = len(form['list']) < 5
+
+        return render(request, "user_list.html", {"form": form})
+
+    if request.method == "POST":
+        if request.POST.get('operation', '') == "next":
+            form['page_no'] = int(request.POST.get('pageNo', 1))
+            form['page_no'] += 1
+        if request.POST.get('operation', '') == "previous":
+            form['page_no'] = int(request.POST.get('pageNo', 1))
+            form['page_no'] -= 1
+        if request.POST.get('operation', '') == "search":
+            form['page_no'] = 1
+            form['first_name'] = request.POST.get('firstName', '')
+
+        form['list'] = UserService().search(form)
+        form['disable_previous'] = form['page_no'] == 1
+        form['disable_next'] = len(form['list']) < 5
+
+        return render(request, "user_list.html", {"form": form})
