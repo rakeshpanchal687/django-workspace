@@ -73,7 +73,7 @@ class UserService:
     def get(self, id):
         cursor = connection.cursor()
         sql = "select * from sos_user where id = %s"
-        data = (id)
+        data = (id,)
         cursor.execute(sql, data)
         result = cursor.fetchall()
         column_name = ("id", "first_name", "last_name", "login_id", "password", "dob", "address")
