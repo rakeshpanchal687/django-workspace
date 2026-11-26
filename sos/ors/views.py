@@ -154,7 +154,6 @@ def user_list(request):
             form['page_no'] = 1
             form['first_name'] = request.POST.get('firstName', '')
 
-
         form['list'] = UserService().search(form)
         form['index'] = (form['page_no'] - 1) * form['page_size']
         form['disable_previous'] = form['page_no'] == 1
@@ -162,9 +161,11 @@ def user_list(request):
 
         return render(request, "user_list.html", {"form": form})
 
+
 def delete_user(request, id=0):
     UserService().delete(id)
     return redirect('/ors/list/')
+
 
 def user_save(request, id=0):
     form = {}
@@ -188,46 +189,72 @@ def user_save(request, id=0):
         return render(request, 'user.html', {'form': form})
 
     if request.method == "POST":
-        form['first_name'] = request.POST.get('firstName', '')
-        form['last_name'] = request.POST.get('lastName', '')
-        form['login_id'] = request.POST.get('loginId', '')
-        form['password'] = request.POST.get('password', '')
-        form['dob'] = request.POST.get('dob', '')
-        form['address'] = request.POST.get('address', '')
 
-        if (DataValidator.is_null(form['first_name'])):
-            form['input_error']['first_name'] = 'First Name is required'
-            form['input_error']['error'] = True
+        operation = request.POST.get('operation', '')
 
-        if (DataValidator.is_null(form['last_name'])):
-            form['input_error']['last_name'] = 'Last Name is required'
-            form['input_error']['error'] = True
+        if operation == 'save' or operation == 'update':
 
-        if (DataValidator.is_null(form['login_id'])):
-            form['input_error']['login_id'] = 'Login ID is required'
-            form['input_error']['error'] = True
+            # form['id'] = int(request.POST.get('id', 0))
+            form['id'] = int(request.POST.get('id') or 0)
+            form['first_name'] = request.POST.get('firstName', '')
+            form['last_name'] = request.POST.get('lastName', '')
+            form['login_id'] = request.POST.get('loginId', '')
+            form['password'] = request.POST.get('password', '')
+            form['dob'] = request.POST.get('dob', '')
+            form['address'] = request.POST.get('address', '')
 
-        if (DataValidator.is_null(form['password'])):
-            form['input_error']['password'] = 'Password is required'
-            form['input_error']['error'] = True
+            if (DataValidator.is_null(form['first_name'])):
+                form['input_error']['first_name'] = 'First Name is required'
+                form['input_error']['error'] = True
 
-        if (DataValidator.is_null(form['dob'])):
-            form['input_error']['dob'] = 'DOB is required'
-            form['input_error']['error'] = True
+            if (DataValidator.is_null(form['last_name'])):
+                form['input_error']['last_name'] = 'Last Name is required'
+                form['input_error']['error'] = True
 
-        if (DataValidator.is_null(form['address'])):
-            form['input_error']['address'] = 'Address is required'
-            form['input_error']['error'] = True
+            if (DataValidator.is_null(form['login_id'])):
+                form['input_error']['login_id'] = 'Login ID is required'
+                form['input_error']['error'] = True
 
-        if form['input_error']['error']:
-            return render(request, 'user.html', {'form': form})
+            if (DataValidator.is_null(form['password'])):
+                form['input_error']['password'] = 'Password is required'
+                form['input_error']['error'] = True
 
-        try:
-            UserService().add(form)
-            form['error'] = False
-            form['message'] = 'User Added Successfully...!!!'
-        except Exception as e:
-            form['error'] = True
-            form['message'] = str(e)
+            if (DataValidator.is_null(form['dob'])):
+                form['input_error']['dob'] = 'DOB is required'
+                form['input_error']['error'] = True
 
-        return render(request, 'user.html', {'form': form})
+            if (DataValidator.is_null(form['address'])):
+                form['input_error']['address'] = 'Address is required'
+                form['input_error']['error'] = True
+
+            if form['input_error']['error']:
+                return render(request, 'user.html', {'form': form})
+
+            if operation == 'save':
+                try:
+                    UserService().add(form)
+                    form['error'] = False
+                    form['message'] = 'User Added Successfully...!!!'
+                except Exception as e:
+                    form['error'] = True
+                    form['message'] = str(e)
+
+                return render(request, 'user.html', {'form': form})
+
+            elif operation == 'update':
+
+                try:
+                    UserService().add(form)
+                    form['error'] = False
+                    form['message'] = 'User Update Successfully...!!!'
+                except Exception as e:
+                    form['error'] = True
+                    form['message'] = str(e)
+
+                return render(request, 'user.html', {'form': form})
+
+        elif operation == "reset":
+            return redirect('/ors/save/')
+
+        elif operation == "list":
+            return redirect('/ors/list/')
