@@ -172,6 +172,7 @@ def user_save(request, id=0):
     form['message'] = ''
     form['error'] = False
     form['input_error'] = {}
+    form['id']=0
     form['input_error']['error'] = False
 
     if request.method == "GET":
@@ -195,7 +196,7 @@ def user_save(request, id=0):
         if operation == 'save' or operation == 'update':
 
             # form['id'] = int(request.POST.get('id', 0))
-            form['id'] = int(request.POST.get('id') or 0)
+            form['id'] = int(request.POST.get('id',0))
             form['first_name'] = request.POST.get('firstName', '')
             form['last_name'] = request.POST.get('lastName', '')
             form['login_id'] = request.POST.get('loginId', '')
