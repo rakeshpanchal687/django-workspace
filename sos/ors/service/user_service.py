@@ -36,8 +36,10 @@ class UserService:
         data = (id, first_name, last_name, login_id, password, dob, address)
         cursor.execute(sql, data)
         connection.commit()
+        # print(dob)
         connection.close()
         print("Data inserted successfully")
+
 
     def update(self, data):
         id = data['id']
