@@ -1,4 +1,3 @@
-import cursor
 from django.db import connection
 
 
